@@ -12,7 +12,7 @@
       },
       "root": "",
       "sourceRoot": "src",
-      "prefix": "app",
+      "prefix": "pl",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
@@ -121,6 +121,41 @@
             "production": {
               "devServerTarget": "ngx-scheduler:serve:production"
             }
+          }
+        }
+      }
+    },
+    "scheduler": {
+      "projectType": "library",
+      "root": "projects/scheduler",
+      "sourceRoot": "projects/scheduler/src",
+      "prefix": "pl",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/scheduler/tsconfig.lib.json",
+            "project": "projects/scheduler/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/scheduler/src/test.ts",
+            "tsConfig": "projects/scheduler/tsconfig.spec.json",
+            "karmaConfig": "projects/scheduler/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/scheduler/tsconfig.lib.json",
+              "projects/scheduler/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
           }
         }
       }
