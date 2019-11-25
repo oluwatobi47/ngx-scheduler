@@ -1,11 +1,11 @@
-import {DATE_FORMAT} from "../scheduler-data";
+// import {DATE_FORMAT} from "../scheduler-data";
 import {CellUnits} from "../enums/cell-units";
 import {ViewType} from "../enums/view-types";
 /**
  * Created by alao on 11/21/2019.
  */
 
-
+export const DATE_FORMAT = 'yyyy-MM-dd';
 //getSummary func example
 export const getSummary = (schedulerData, headerEvents, slotId, slotName, headerStart, headerEnd) => {
   return {text: 'Summary', color: 'red', fontSize: '1.2rem'};
