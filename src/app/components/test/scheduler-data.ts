@@ -72,6 +72,19 @@ export class SchedulerData {
     }
   }
 
+
+  setStartDate(date: string) {
+    this.startDate = date != undefined ? this.localeMoment(date).startOf('month').format(DATE_FORMAT)
+      : this.localeMoment(this.startDate).add(0, 'months').format(DATE_FORMAT);
+    return this;
+  }
+
+  setEndDate(date: string) {
+    this.endDate = date != undefined ? this.localeMoment(date).endOf('month').format(DATE_FORMAT)
+      : this.localeMoment(this.endDate).add(0, 'months').format(DATE_FORMAT);
+    return this;
+  }
+
   setResources(resources) {
     this._validateResource(resources);
     this.resources = Array.from(new Set(resources));

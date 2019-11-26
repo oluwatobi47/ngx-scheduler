@@ -112,3 +112,30 @@ table.resource-table tr td:last-child, /*table.scheduler-bg-table tr td:last-chi
   bottom:0;
   z-index: 1;
 }
+
+.event-item{
+  color: #fff;
+  padding: 2px;
+  font-size: 11px;
+  border-radius: 5px;
+  margin-left: 2px;
+  margin-right: 5px;
+  position: absolute;
+}
+
+.event-group-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.event-group {
+  height: 26px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  //margin:2px;
+}
+
+.event-header {
+  font-weight: bold;
+}

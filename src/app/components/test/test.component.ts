@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import * as moment from 'moment';
 import {ViewType} from "../../scheduler/enums/view-types";
 import {SchedulerData} from "./scheduler-data";
+import {resource} from "selenium-webdriver/http";
 
 export type EventGroup = {[key: string]: Array<EventData>};
 export class TestData {
@@ -14,6 +15,7 @@ export class TestData {
   eventGroups: EventGroup;
   duration: number;
   events: EventData[];
+  color?: string;
 }
 
 class EventData {
@@ -31,45 +33,46 @@ class EventData {
 })
 export class TestComponent implements OnInit {
   processComplete: boolean;
-  schedulerData: SchedulerData = new SchedulerData('2017-12-18', ViewType.MONTH);
-
+  schedulerData: SchedulerData;
+  processedData: Array<TestData> = [];
   sampleData: Array<TestData> = [
     {
       id: 2,
-      start: '2017-12-18 12:30:00',
-      end: '2017-12-26 23:30:00',
+      start: '2019-12-18 12:30:00',
+      end: '2019-12-26 23:30:00',
       resourceId: 'r2',
       title: 'James Bond',
       description: 'James Bond Leave 3(8 days)',
       duration: 8,
       eventGroups: {},
+      color: null,
       events: [
         {
           id: 4,
-          start: '2017-12-15 12:30:00',
-          end: '2017-12-27 23:30:00',
+          start: '2019-12-15 12:30:00',
+          end: '2019-12-27 23:30:00',
           description: 'James Bond Leave 3(8 days)',
           duration: 12
         },
         {
           id: 5,
-          start: '2017-12-28 12:30:00',
-          end: '2017-12-29 23:30:00',
+          start: '2019-12-28 12:30:00',
+          end: '2019-12-29 23:30:00',
           description: 'James Bond Leave 3(8 days)',
           duration: 8
         },
         {
           id: 6,
-          start: '2017-12-13 12:30:00',
-          end: '2017-12-19 23:30:00',
+          start: '2019-12-13 12:30:00',
+          end: '2019-12-19 23:30:00',
           description: 'James Bond Leave 3(8 days)',
           duration: 8
         },
 
         {
           id: 7,
-          start: '2017-12-18 12:30:00',
-          end: '2017-12-29 23:30:00',
+          start: '2019-12-18 12:30:00',
+          end: '2019-12-29 23:30:00',
           description: 'James Bond Leave 3(8 days)',
           duration: 8
         },
@@ -77,88 +80,421 @@ export class TestComponent implements OnInit {
     },
     {
       id: 3,
-      start: '2017-12-19 12:30:00',
-      end: '2017-12-24 23:30:00',
+      start: '2019-12-19 12:30:00',
+      end: '2019-12-24 23:30:00',
       resourceId: 'r3',
       title: 'John Doe',
       description: 'John Doe Leave 2 (5 days)',
       duration: 5,
       eventGroups: {},
+      color: null,
       events: [
         {
           id: 1,
-          start: '2017-12-15 12:30:00',
-          end: '2017-12-27 23:30:00',
-          description: 'James Bond Leave 3(8 days)',
+          start: '2019-12-15 12:30:00',
+          end: '2019-12-27 23:30:00',
+          description: 'John Doe Leave 3(8 days)',
+          duration: 12
+        },
+/*        {
+          id: 2,
+          start: '2019-12-18 12:30:00',
+          end: '2019-12-26 23:30:00',
+          description: 'John Doe Leave 3(8 days)',
+          duration: 8
+        },
+        {
+          id: 3,
+          start: '2019-12-22 12:30:00',
+          end: '2018-01-01 23:30:00',
+          description: 'John Doe Leave 3(8 days)',
+          duration: 12
+        },
+        {
+          id: 4,
+          start: '2019-11-22 12:30:00',
+          end: '2019-12-11 23:30:00',
+          description: 'John Doe Test Previous Month',
+          duration: 12
+        }*/
+      ]
+    },
+/*    {
+      id: 4,
+      start: '2019-12-19 12:30:00',
+      end: '2019-12-24 23:30:00',
+      resourceId: 'r3',
+      title: 'Kolawole Jones',
+      description: 'Kolawole Jones Leave 2 (5 days)',
+      duration: 5,
+      eventGroups: {},
+      color: null,
+      events: [
+        {
+          id: 1,
+          start: '2019-12-15 12:30:00',
+          end: '2019-12-27 23:30:00',
+          description: 'Kolawole Jones Leave 3(8 days)',
           duration: 12
         },
         {
           id: 2,
-          start: '2017-12-18 12:30:00',
-          end: '2017-12-26 23:30:00',
+          start: '2019-12-18 12:30:00',
+          end: '2019-12-26 23:30:00',
+          description: 'Kolawole Jones Leave 3(8 days)',
+          duration: 8
+        }
+      ]
+    },
+    {
+      id: 2,
+      start: '2019-12-18 12:30:00',
+      end: '2019-12-26 23:30:00',
+      resourceId: 'r2',
+      title: 'James Bond',
+      description: 'James Bond Leave 3(8 days)',
+      duration: 8,
+      eventGroups: {},
+      color: null,
+      events: [
+        {
+          id: 4,
+          start: '2019-12-15 12:30:00',
+          end: '2019-12-27 23:30:00',
           description: 'James Bond Leave 3(8 days)',
+          duration: 12
+        }
+      ]
+    },
+    {
+      id: 3,
+      start: '2019-12-19 12:30:00',
+      end: '2019-12-24 23:30:00',
+      resourceId: 'r3',
+      title: 'John Doe',
+      description: 'John Doe Leave 2 (5 days)',
+      duration: 5,
+      eventGroups: {},
+      color: null,
+      events: [
+        {
+          id: 1,
+          start: '2019-12-1 12:30:00',
+          end: '2019-12-4 23:30:00',
+          description: 'John Doe Leave 3(8 days)',
+          duration: 12
+        },
+        {
+          id: 2,
+          start: '2019-12-7 12:30:00',
+          end: '2019-12-8 23:30:00',
+          description: 'John Doe Leave 3(8 days)',
           duration: 8
         }
       ]
     },
     {
       id: 4,
-      start: '2017-12-19 12:30:00',
-      end: '2017-12-24 23:30:00',
+      start: '2019-12-19 12:30:00',
+      end: '2019-12-24 23:30:00',
       resourceId: 'r3',
       title: 'Kolawole Jones',
       description: 'Kolawole Jones Leave 2 (5 days)',
       duration: 5,
       eventGroups: {},
+      color: null,
       events: [
         {
           id: 1,
-          start: '2017-12-15 12:30:00',
-          end: '2017-12-27 23:30:00',
+          start: '2019-12-15 12:30:00',
+          end: '2019-12-27 23:30:00',
           description: 'Kolawole Jones Leave 3(8 days)',
           duration: 12
         },
         {
           id: 2,
-          start: '2017-12-18 12:30:00',
-          end: '2017-12-26 23:30:00',
+          start: '2019-12-18 12:30:00',
+          end: '2019-12-26 23:30:00',
           description: 'Kolawole Jones Leave 3(8 days)',
           duration: 8
         }
       ]
-    }
+    },
+    {
+      id: 4,
+      start: '2019-12-19 12:30:00',
+      end: '2019-12-24 23:30:00',
+      resourceId: 'r3',
+      title: 'Kolawole Jones',
+      description: 'Kolawole Jones Leave 2 (5 days)',
+      duration: 5,
+      eventGroups: {},
+      color: null,
+      events: [
+        {
+          id: 1,
+          start: '2019-12-15 12:30:00',
+          end: '2019-12-27 23:30:00',
+          description: 'Kolawole Jones Leave 3(8 days)',
+          duration: 12
+        },
+        {
+          id: 2,
+          start: '2019-12-18 12:30:00',
+          end: '2019-12-26 23:30:00',
+          description: 'Kolawole Jones Leave 3(8 days)',
+          duration: 8
+        }
+      ]
+    },
+    {
+      id: 2,
+      start: '2019-12-18 12:30:00',
+      end: '2019-12-26 23:30:00',
+      resourceId: 'r2',
+      title: 'James Bond',
+      description: 'James Bond Leave 3(8 days)',
+      duration: 8,
+      eventGroups: {},
+      color: null,
+      events: [
+        {
+          id: 4,
+          start: '2019-12-15 12:30:00',
+          end: '2019-12-27 23:30:00',
+          description: 'James Bond Leave 3(8 days)',
+          duration: 12
+        }
+      ]
+    },
+    {
+      id: 3,
+      start: '2019-12-19 12:30:00',
+      end: '2019-12-24 23:30:00',
+      resourceId: 'r3',
+      title: 'John Doe',
+      description: 'John Doe Leave 2 (5 days)',
+      duration: 5,
+      eventGroups: {},
+      color: null,
+      events: [
+        {
+          id: 1,
+          start: '2019-12-1 12:30:00',
+          end: '2019-12-4 23:30:00',
+          description: 'John Doe Leave 3(8 days)',
+          duration: 12
+        },
+        {
+          id: 2,
+          start: '2019-12-7 12:30:00',
+          end: '2019-12-8 23:30:00',
+          description: 'John Doe Leave 3(8 days)',
+          duration: 8
+        }
+      ]
+    },
+    {
+      id: 2,
+      start: '2019-12-18 12:30:00',
+      end: '2019-12-26 23:30:00',
+      resourceId: 'r2',
+      title: 'James Bond',
+      description: 'James Bond Leave 3(8 days)',
+      duration: 8,
+      eventGroups: {},
+      color: null,
+      events: [
+        {
+          id: 4,
+          start: '2019-12-15 12:30:00',
+          end: '2019-12-27 23:30:00',
+          description: 'James Bond Leave 3(8 days)',
+          duration: 12
+        }
+      ]
+    },
+    {
+      id: 3,
+      start: '2019-12-19 12:30:00',
+      end: '2019-12-24 23:30:00',
+      resourceId: 'r3',
+      title: 'John Doe',
+      description: 'John Doe Leave 2 (5 days)',
+      duration: 5,
+      eventGroups: {},
+      color: null,
+      events: [
+        {
+          id: 1,
+          start: '2019-12-1 12:30:00',
+          end: '2019-12-4 23:30:00',
+          description: 'John Doe Leave 3(8 days)',
+          duration: 12
+        },
+        {
+          id: 2,
+          start: '2019-12-7 12:30:00',
+          end: '2019-12-8 23:30:00',
+          description: 'John Doe Leave 3(8 days)',
+          duration: 8
+        }
+      ]
+    },
+    {
+      id: 4,
+      start: '2019-12-19 12:30:00',
+      end: '2019-12-24 23:30:00',
+      resourceId: 'r3',
+      title: 'Kolawole Jones',
+      description: 'Kolawole Jones Leave 2 (5 days)',
+      duration: 5,
+      eventGroups: {},
+      color: null,
+      events: [
+        {
+          id: 1,
+          start: '2019-12-15 12:30:00',
+          end: '2019-12-27 23:30:00',
+          description: 'Kolawole Jones Leave 3(8 days)',
+          duration: 12
+        },
+        {
+          id: 2,
+          start: '2019-12-18 12:30:00',
+          end: '2019-12-26 23:30:00',
+          description: 'Kolawole Jones Leave 3(8 days)',
+          duration: 8
+        }
+      ]
+    },
+    {
+      id: 4,
+      start: '2019-12-19 12:30:00',
+      end: '2019-12-24 23:30:00',
+      resourceId: 'r3',
+      title: 'Kolawole Jones',
+      description: 'Kolawole Jones Leave 2 (5 days)',
+      duration: 5,
+      eventGroups: {},
+      color: null,
+      events: [
+        {
+          id: 1,
+          start: '2019-12-15 12:30:00',
+          end: '2019-12-27 23:30:00',
+          description: 'Kolawole Jones Leave 3(8 days)',
+          duration: 12
+        },
+        {
+          id: 2,
+          start: '2019-12-18 12:30:00',
+          end: '2019-12-26 23:30:00',
+          description: 'Kolawole Jones Leave 3(8 days)',
+          duration: 8
+        }
+      ]
+    },
+    {
+      id: 3,
+      start: '2019-12-19 12:30:00',
+      end: '2019-12-24 23:30:00',
+      resourceId: 'r3',
+      title: 'John Doe',
+      description: 'John Doe Leave 2 (5 days)',
+      duration: 5,
+      eventGroups: {},
+      color: null,
+      events: [
+        {
+          id: 1,
+          start: '2019-12-1 12:30:00',
+          end: '2019-12-4 23:30:00',
+          description: 'John Doe Leave 3(8 days)',
+          duration: 12
+        },
+        {
+          id: 2,
+          start: '2019-12-7 12:30:00',
+          end: '2019-12-8 23:30:00',
+          description: 'John Doe Leave 3(8 days)',
+          duration: 8
+        }
+      ]
+    },
+    {
+      id: 2,
+      start: '2019-12-18 12:30:00',
+      end: '2019-12-26 23:30:00',
+      resourceId: 'r2',
+      title: 'James Bond',
+      description: 'James Bond Leave 3(8 days)',
+      duration: 8,
+      eventGroups: {},
+      color: null,
+      events: [
+        {
+          id: 4,
+          start: '2019-12-15 12:30:00',
+          end: '2019-12-27 23:30:00',
+          description: 'James Bond Leave 3(8 days)',
+          duration: 12
+        }
+      ]
+    },*/
   ];
-
+  useRandomColor = true;
+  colors: any = {
+    0: ['#19887A','#FF8E39','#00EB7E'],
+    1: ['#1F7A00','#6BAB55','#9c1717'],
+    2: ['#cc6125','#402F84','#842047']
+  }
   constructor() {
   }
 
+  getRandomColor(eventGroupIndex) {
+    const mod = Number(eventGroupIndex) % 3;
+    const index = Math.floor(Math.random() * 3);
+    return this.colors[mod][index];
+  }
+
   ngOnInit() {
-    // const schedulerData: SchedulerData = new SchedulerData('2017-12-18', ViewType.MONTH);
+    this.schedulerData = new SchedulerData('2019-12-18', ViewType.MONTH)
+      .setStartDate('2019-01-01').setEndDate('2019-12-31');
+    // const schedulerData: SchedulerData = new SchedulerData('2019-12-18', ViewType.MONTH);
     // schedulerData.startDate
     // schedulerData.endDate =
     this.schedulerData._createHeaders();
     console.log(this.schedulerData.headers);
 
     // this.orderResourceEvents(this.sampleData);
-    // this.processEvents(this.sampleData);
+    if(!this.processedData.length) {
+      this.processedData = this.processEvents(this.sampleData);
+    }
   }
 
   onDateSelected(event) {
     console.log('Value', event.target);
   }
 
-  getProcessedData (): Array<TestData>{
-    return this.processEvents(this.sampleData) ? this.processEvents(this.sampleData) : [];
+
+  getMapNextIndex(map: Map<number, Array<any>>,  currentKey: number){
+    if(currentKey +1 > map.size) {
+      return
+    }
+    return (map.size);
   }
 
   processEvents(resourceEventData: Array<TestData>) {
     const d = resourceEventData;
-    d.forEach((resource: TestData) => {
+    console.log('d', d);
+    d.forEach((resource: TestData, resourceIndex: number) => {
+      resource.color = this.useRandomColor ? this.getRandomColor(resourceIndex) : '#FF8E39';
       let mapData: Map<number, Array<any>> = new Map<number, Array<any>>();
       let mapObj: any = {};
       resource.events.sort((a, b) => (a.start > b.start) ? 1 : -1);
       resource.events.forEach((event: EventData, index) => {
-        debugger;
+        // debugger;
         const arr = [];
         if (index == 0) {
           arr.push(event);
@@ -167,6 +503,7 @@ export class TestComponent implements OnInit {
         } else {
           for (let i = 0; i < mapData.size; i++) {
             const groupData = mapData.get(i);
+            console.log(i);
             const groupKey = i;
             const hasConflict = groupData.findIndex(obj => this.hasConflict(event, obj)) > -1;
             const hasEvent = groupData.findIndex(obj => this.isSame(event, obj)) > -1;
@@ -174,8 +511,9 @@ export class TestComponent implements OnInit {
             if (hasConflict && !hasEvent) {
               if (!this.mapHasNext(mapData, groupKey)) {
                 arr.push(event);
-                mapData.set(index, arr);
-                resource.eventGroups[index] = arr;
+                console.log('Curr Key', this.getLastKey(resource.eventGroups));
+                mapData.set((this.getLastKey(resource.eventGroups)+1), arr);
+                resource.eventGroups[this.getLastKey(resource.eventGroups)+1] = arr;
                 break;
               }
             } else if (!hasConflict) {
@@ -224,8 +562,34 @@ export class TestComponent implements OnInit {
     return Object.keys(data.eventGroups).length * 30;
   }
 
-  getEventItemWidth() {
+  getEventItemWidth(startDate, endDate) {
+    const calendarStart = moment(this.schedulerData.startDate);
+    const calendarEnd = moment(this.schedulerData.endDate);
+    const start = moment(startDate);
+    const end = moment(endDate);
+    const noOfdays: number = end.diff(start, 'days');
+    let startDiff = 0;
+    let endDiff = 0;
 
+    if(start.isBefore(calendarStart)){
+      startDiff = start.diff(calendarStart, 'days');
+      console.log('statDif', startDiff);
+    }
+
+    if(end.isAfter(calendarEnd)) {
+      endDiff = end.diff(calendarEnd, 'days');
+      console.log('endDIf', endDiff);
+    }
+
+    return noOfdays ? ((noOfdays - (Math.abs(startDiff) + Math.abs(endDiff))) * 100) + 100 - 10: 'auto';
+  }
+
+
+  getEventItemPosition(dateValue) : number{
+    const calendarStart = moment(this.schedulerData.startDate);
+    const date = moment(dateValue);
+    const noOfdays: number = date.diff(calendarStart, 'days');
+    return (noOfdays && (noOfdays > 0 ))? noOfdays * 100 : 0;
   }
 
   getEventGroupKeys(data: TestData): Array<string> {
@@ -234,6 +598,12 @@ export class TestComponent implements OnInit {
 
   getEventGroupData(eventGroupKey: string, data: TestData){
     return data.eventGroups[eventGroupKey];
+  }
+
+  getLastKey(object: Object): number {
+    const keys = Object.keys(object);
+    const result = keys.length ? parseInt(keys.reverse()[0]): 0;
+    return result;
   }
 
 }
