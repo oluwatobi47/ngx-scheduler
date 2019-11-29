@@ -1,0 +1,106 @@
+<div *ngIf="pResourceData?.length">
+  <table class="table" style="width: 1000px">
+    <tbody>
+    <tr>
+      <td class="resource-container">
+        <div style="border: 1px solid #e9e9e9;overflow: scroll hidden;">
+          <div class="resource-header-container">
+            <span>{{resourceHeader}}</span>
+          </div>
+          <div>
+            <div class="w-250">
+              <table class="resource-table">
+                <tbody>
+                <tr *ngFor="let option of pResourceData" class="resource-item" [style.height.px]="getResourceHeight(option)">
+                  <td>
+                    <div>
+                      <span class="resource-title">{{option?.title}}</span>
+                    </div>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </td>
+      <td>
+        <div class="events-container">
+          <div class="header-height">
+            <div>
+              <div [style.width.px]="(schedulerData?.headers?.length * 100)">
+                <table class="scheduler-bg-table" >
+                  <thead>
+                  <tr style="height: 40px">
+                    <th *ngFor="let header of schedulerData?.headers; let i =index"class="event-header" [ngStyle]="{'background': header.nonWorkingTime ? weekendColor : 'transparent'}">
+                      <div>
+                        <div>{{header?.time | date: 'MMM d'}}</div>
+                      </div>
+                    </th>
+                  </tr>
+                  </thead>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div style="margin: 0px; position: relative;">
+            <div [style.width.px]="(schedulerData?.headers?.length * 100)">
+              <!--height-->
+              <div class="scheduler-content">
+                <table class="scheduler-content-table">
+                  <tbody>
+                  <tr *ngFor="let option of pResourceData" class="resource-item" [style.height.px]="getResourceHeight(option)">
+                    <td class="w-748">
+                      <div class="event-group-container">
+                        <!--Event container that will contain events for staff-->
+                        <div [style.width.px]="(schedulerData?.headers?.length * 100)"
+                             class="w-748 event-group"
+                             *ngFor="let groupKey of getEventGroupKeys(option);">
+
+                          <ng-container *ngFor="let event of getEventGroupData(groupKey,option)">
+                              <div *ngIf="isValidDate(event?.end)" class="event-item"
+                                    (mouseover)="showTooltip($event,tooltip)"
+                                    [style.background]="option?.color"
+                                    [style.width.px]="getEventItemWidth(event?.start, event?.end)"
+                                    [style.left.px]="getEventItemPosition(event?.start)">
+                                {{event?.description}}
+                                <div class="popover above"
+                                     [style.left.px]="getEventItemWidth(event?.start, event?.end)/3" #tooltip>
+                                  <div>
+                                    <div>Hello</div>
+                                    <br>
+                                    <div>Hola</div>
+                                  </div>
+                                </div>
+                              </div>
+                          </ng-container>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="scheduler-bg" [style.width.px]="(schedulerData?.headers?.length * 100)">
+                <table class="scheduler-bg-table">
+                  <tbody>
+                  <tr *ngFor="let option of pResourceData" class="resource-item" [style.height.px]="getResourceHeight(option)">
+
+                    <td *ngFor="let header of schedulerData?.headers; let i =index" style="width: 100px" [ngStyle]="{'background': header.nonWorkingTime ? weekendColor: 'transparent'}">
+                      <!--                        <div [attr.key]="i">
+                                                {{header?.time | date: 'MM, dd'}}
+                                              </div>-->
+                    </td>
+                  </tr>
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

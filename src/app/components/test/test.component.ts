@@ -56,8 +56,8 @@ export class TestComponent implements OnInit {
         },
         {
           id: 5,
-          start: '2019-12-28 12:30:00',
-          end: '2019-12-29 23:30:00',
+          start: '2019-1-28 12:30:00',
+          end: '2019-1-29 23:30:00',
           description: 'James Bond Leave 3(8 days)',
           duration: 8
         },
@@ -468,10 +468,11 @@ export class TestComponent implements OnInit {
     console.log(this.schedulerData.headers);
 
     // this.orderResourceEvents(this.sampleData);
-    if(!this.processedData.length) {
-      this.processedData = this.processEvents(this.sampleData);
-    }
+/*    if(!this.processedData.length) {
+      // this.processedData = this.processEvents(this.sampleData);
+    }*/
   }
+/*
 
   onDateSelected(event) {
     console.log('Value', event.target);
@@ -557,7 +558,6 @@ export class TestComponent implements OnInit {
     return (eventData1.start == eventData2.start) && (eventData1.end == eventData2.end)
   }
 
-
   getResourceHeight(data: TestData): number {
     return Object.keys(data.eventGroups).length * 30;
   }
@@ -584,7 +584,6 @@ export class TestComponent implements OnInit {
     return noOfdays ? ((noOfdays - (Math.abs(startDiff) + Math.abs(endDiff))) * 100) + 100 - 10: 'auto';
   }
 
-
   getEventItemPosition(dateValue) : number{
     const calendarStart = moment(this.schedulerData.startDate);
     const date = moment(dateValue);
@@ -605,5 +604,6 @@ export class TestComponent implements OnInit {
     const result = keys.length ? parseInt(keys.reverse()[0]): 0;
     return result;
   }
+*/
 
 }

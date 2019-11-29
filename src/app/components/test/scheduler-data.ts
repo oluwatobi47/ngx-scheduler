@@ -961,8 +961,7 @@ export class SchedulerData {
   }
 
 }
-/*import {SummaryPos} from "../enums/summary-pos";
-import {ViewType} from "../enums/view-types";*/
+
 export const config = {
   schedulerWidth: '100%',
   besidesWidth: 20,
@@ -1042,7 +1041,7 @@ export const config = {
 };
 
 
-//getDateLabel func example
+
 export const getDateLabel = (schedulerData, viewType, startDate, endDate) => {
   let start = schedulerData.localeMoment(startDate);
   let end = schedulerData.localeMoment(endDate);

@@ -1,3 +1,4 @@
+<!--
 <div *ngIf="processedData?.length">
   <table class="table" style="width: 1000px">
     <thead>
@@ -16,7 +17,7 @@
       <tr>
         <td class="resource-container">
           <div style="border: 1px solid #e9e9e9;overflow: scroll hidden;">
-            <div class="header-height">
+            <div class="resource-header-container">
               <span>Resource Name</span>
             </div>
             <div>
@@ -41,14 +42,14 @@
             <div class="header-height">
               <div>
                 <div [style.width.px]="(schedulerData?.headers?.length * 100)">
-                  <table class="scheduler-bg-table">
+                  <table class="scheduler-bg-table" >
                     <thead>
                       <tr style="height: 40px">
-                        <td *ngFor="let header of schedulerData?.headers; let i =index" style="width: 99px" [ngStyle]="{'background': header.nonWorkingTime ? '#45966920': 'transparent'}">
-                          <div [attr.key]="i" class="event-header">
-                            {{header?.time | date: 'MMM d'}}
+                        <th *ngFor="let header of schedulerData?.headers; let i =index"class="event-header" [ngStyle]="{'background': header.nonWorkingTime ? '#45966920': 'transparent'}">
+                          <div>
+                            <div>{{header?.time | date: 'MMM d'}}</div>
                           </div>
-                        </td>
+                        </th>
                       </tr>
                     </thead>
                   </table>
@@ -57,14 +58,14 @@
             </div>
             <div style="margin: 0px; position: relative;">
               <div [style.width.px]="(schedulerData?.headers?.length * 100)">
-                <!--height-->
+                &lt;!&ndash;height&ndash;&gt;
                 <div class="scheduler-content">
                   <table class="scheduler-content-table">
                     <tbody>
                       <tr *ngFor="let option of processedData" class="resource-item" [style.height.px]="getResourceHeight(option)">
                         <td class="w-748">
                           <div class="event-group-container">
-                            <!--Event container that will contain events for staff-->
+                            &lt;!&ndash;Event container that will contain events for staff&ndash;&gt;
                             <div [style.width.px]="(schedulerData?.headers?.length * 100)"
                                  class="w-748 event-group"
                                  *ngFor="let groupKey of getEventGroupKeys(option);">
@@ -84,10 +85,10 @@
                     <tbody>
                     <tr *ngFor="let option of processedData" class="resource-item" [style.height.px]="getResourceHeight(option)">
 
-                      <td *ngFor="let header of schedulerData?.headers; let i =index" style="width: 99px" [ngStyle]="{'background': header.nonWorkingTime ? '#45966920': 'transparent'}">
-<!--                        <div [attr.key]="i">
+                      <td *ngFor="let header of schedulerData?.headers; let i =index" style="width: 100px" [ngStyle]="{'background': header.nonWorkingTime ? '#45966920': 'transparent'}">
+&lt;!&ndash;                        <div [attr.key]="i">
                           {{header?.time | date: 'MM, dd'}}
-                        </div>-->
+                        </div>&ndash;&gt;
                       </td>
                     </tr>
 
@@ -102,3 +103,16 @@
     </tbody>
   </table>
 </div>
+-->
+<pl-scheduler [resourceData]="sampleData"
+              [calenderStart]="'2019-12-01'"
+              [calenderEnd]="'2019-12-31'">
+<!--  <pl-scheduler-resource *ngFor="let option of sampleData">
+    <pl-scheduler-data *ngFor="let event of option?.events">
+      <div>
+        Hello word- {{event?.description}}
+      </div>
+    </pl-scheduler-data>
+  </pl-scheduler-resource>-->
+</pl-scheduler>
+

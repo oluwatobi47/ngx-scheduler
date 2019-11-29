@@ -1,0 +1,587 @@
+import * as moment from 'moment';
+import {ViewType} from "../enums/view-types";
+import {CellUnits} from "../enums/cell-units";
+import {SummaryPos} from "../enums/summary-pos";
+
+export const DATE_FORMAT = 'YYYY-MM-DD';
+export const DATETIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
+
+export const config = {
+  schedulerWidth: '100%',
+  besidesWidth: 20,
+  schedulerMaxHeight: 0,
+  tableHeaderHeight: 40,
+
+  agendaResourceTableWidth: 160,
+  agendaMaxEventWidth: 100,
+
+  dayResourceTableWidth: 160,
+  weekResourceTableWidth: '16%',
+  monthResourceTableWidth: 160,
+  quarterResourceTableWidth: 160,
+  yearResourceTableWidth: 160,
+  customResourceTableWidth: 160,
+
+  dayCellWidth: 30,
+  weekCellWidth: '12%',
+  monthCellWidth: 80,
+  quarterCellWidth: 80,
+  yearCellWidth: 80,
+  customCellWidth: 80,
+
+  dayMaxEvents: 99,
+  weekMaxEvents: 99,
+  monthMaxEvents: 99,
+  quarterMaxEvents: 99,
+  yearMaxEvents: 99,
+  customMaxEvents: 99,
+
+  eventItemHeight: 22,
+  eventItemLineHeight: 24,
+  nonAgendaSlotMinHeight: 0,
+  dayStartFrom: 0,
+  dayStopTo: 23,
+  defaultEventBgColor: '#80C5F6',
+  selectedAreaColor: '#7EC2F3',
+  nonWorkingTimeHeadColor: '#999999',
+  nonWorkingTimeHeadBgColor: '#fff0f6',
+  nonWorkingTimeBodyBgColor: '#fff0f6',
+  summaryColor: '#666',
+  summaryPos: SummaryPos.TopRight,
+  groupOnlySlotColor: '#F8F8F8',
+
+  startResizable: true,
+  endResizable: true,
+  movable: true,
+  creatable: true,
+  crossResourceMove: true,
+  checkConflict: false,
+  scrollToSpecialMomentEnabled: true,
+  eventItemPopoverEnabled: true,
+  calendarPopoverEnabled: true,
+  recurringEventsEnabled: true,
+  headerEnabled: true,
+  displayWeekend: true,
+  relativeMove: true,
+  defaultExpanded: true,
+
+  resourceName: 'Resource Name',
+  taskName: 'Task Name',
+  agendaViewHeader: 'Agenda',
+  addMorePopoverHeaderFormat: 'MMM D, YYYY dddd',
+  eventItemPopoverDateFormat: 'MMM D',
+  nonAgendaDayCellHeaderFormat: 'ha',
+  nonAgendaOtherCellHeaderFormat: 'ddd M/D',
+
+  minuteStep: 30,
+
+  views: [
+    {viewName: 'Day', viewType: ViewType.DAY, showAgenda: false, isEventPerspective: false},
+    {viewName: 'Week', viewType: ViewType.WEEK, showAgenda: false, isEventPerspective: false},
+    {viewName: 'Month', viewType: ViewType.MONTH, showAgenda: false, isEventPerspective: false},
+    {viewName: 'Quarter', viewType: ViewType.QUARTER, showAgenda: false, isEventPerspective: false},
+    {viewName: 'Year', viewType: ViewType.YEAR, showAgenda: false, isEventPerspective: false},
+  ],
+};
+
+export const getDateLabel = (schedulerData, viewType, startDate, endDate) => {
+  let start = schedulerData.localeMoment(startDate);
+  let end = schedulerData.localeMoment(endDate);
+  let dateLabel = start.format('MMM D, YYYY');
+
+  if(viewType === ViewType.WEEK || (start != end && (
+      viewType === ViewType.CUSTOM/* || viewType === ViewType.Custom1 || viewType === ViewType.Custom2*/
+    ))) {
+    dateLabel = `${start.format('MMM D')}-${end.format('D, YYYY')}`;
+    if(start.month() !== end.month())
+      dateLabel = `${start.format('MMM D')}-${end.format('MMM D, YYYY')}`;
+    if(start.year() !== end.year())
+      dateLabel = `${start.format('MMM D, YYYY')}-${end.format('MMM D, YYYY')}`;
+  }
+  else if(viewType === ViewType.MONTH){
+    dateLabel = start.format('MMMM YYYY');
+  }
+  else if(viewType === ViewType.QUARTER){
+    dateLabel = `${start.format('MMM D')}-${end.format('MMM D, YYYY')}`;
+  }
+  else if(viewType === ViewType.YEAR) {
+    dateLabel = start.format('YYYY');
+  }
+
+  return dateLabel;
+}
+
+export const getEventText = (schedulerData, event) => {
+  if(!schedulerData.isEventPerspective) return event.title;
+
+  let eventText = event.title;
+  schedulerData.resources.forEach((item) => {
+    if(item.id === event.resourceId) {
+      eventText = item.name;
+    }
+  })
+
+  return eventText;
+}
+
+export const getScrollSpecialMoment = (schedulerData, startMoment, endMoment) => {
+  // return endMoment;
+  const { localeMoment } = schedulerData;
+  return localeMoment();
+}
+
+export const isNonWorkingTime = (schedulerData, time) => {
+  const { localeMoment } = schedulerData;
+  if(schedulerData.cellUnit === CellUnits.HOUR){
+    let hour = localeMoment(time).hour();
+    if(hour < 9 || hour > 18)
+      return true;
+  }
+  else {
+    let dayOfWeek = localeMoment(time).weekday();
+    if (dayOfWeek === 0 || dayOfWeek === 6)
+      return true;
+  }
+
+  return false;
+}
+
+export const behaviors =  {
+  //getSummaryFunc: getSummary,
+  getSummaryFunc: undefined,
+  //getCustomDateFunc: getCustomDate,
+  getCustomDateFunc: undefined,
+  // getNonAgendaViewBodyCellBgColorFunc: getNonAgendaViewBodyCellBgColor,
+  getNonAgendaViewBodyCellBgColorFunc: undefined,
+  getScrollSpecialMomentFunc: getScrollSpecialMoment,
+  getDateLabelFunc: getDateLabel,
+  getEventTextFunc: getEventText,
+  isNonWorkingTimeFunc: isNonWorkingTime,
+}
+
+
+export class SchedulerData {
+
+  resources: Array<any>;
+  events: Array<any>;
+  eventGroups: Array<any>;
+  eventGroupsAutoGenerated: boolean;//true
+  viewType: ViewType;
+  cellUnit: CellUnits;
+  showAgenda: boolean;//false
+  isEventPerspective: boolean;//false
+  resizing: boolean;
+  scrollToSpecialMoment: boolean;
+  documentWidth: number;
+  localeMoment: any;
+
+  config: any;
+  behaviors: any;
+
+  renderData: any;
+  startDate: any;
+  endDate: any;
+  selectDate:any;
+
+  headers: any;
+
+  constructor(date:any = moment().format(DATE_FORMAT), viewType = ViewType.WEEK,
+              showAgenda = false, isEventPerspective = false,
+              newConfig = undefined, newBehaviors = undefined,
+              localeMoment = undefined) {
+    this.resources = [];
+    this.events = [];
+    this.eventGroups = [];
+    this.eventGroupsAutoGenerated = true;
+    this.viewType = viewType;
+    this.cellUnit = viewType === ViewType.DAY ? CellUnits.HOUR : CellUnits.DAY;
+    this.showAgenda = showAgenda;
+    this.isEventPerspective = isEventPerspective;
+    this.resizing = false;
+    this.scrollToSpecialMoment = false;
+    this.documentWidth = 0;
+
+    this.localeMoment = moment;
+    if(!!localeMoment)
+      this.localeMoment = localeMoment;
+    this.config = newConfig == undefined ? config : {...config, ...newConfig};
+    this._validateMinuteStep(this.config.minuteStep);
+    this.behaviors = newBehaviors == undefined ? behaviors : {...behaviors, ...newBehaviors};
+    this._resolveDate(0, date);
+    this._createHeaders();
+    this._createRenderData();
+  }
+
+
+  setStartDate(date: string | number) {
+    this.startDate = date != undefined ? this.localeMoment(date).startOf('month').format(DATE_FORMAT)
+      : this.localeMoment(this.startDate).add(0, 'months').format(DATE_FORMAT);
+    return this;
+  }
+
+  setEndDate(date: string | number) {
+    this.endDate = date != undefined ? this.localeMoment(date).endOf('month').format(DATE_FORMAT)
+      : this.localeMoment(this.startDate).add(0, 'months').format(DATE_FORMAT);
+    return this;
+  }
+
+  getMinuteStepsInHour(){
+    return 60 / this.config.minuteStep;
+  }
+
+  getCellMaxEvents(){
+    return this.viewType === ViewType.WEEK ? this.config.weekMaxEvents : (
+      this.viewType === ViewType.DAY ? this.config.dayMaxEvents : (
+        this.viewType === ViewType.MONTH ? this.config.monthMaxEvents : (
+          this.viewType === ViewType.YEAR ? this.config.yearMaxEvents : (
+            this.viewType === ViewType.QUARTER ? this.config.quarterMaxEvents :
+              this.config.customMaxEvents
+          )
+        )
+      )
+    );
+  }
+
+  _resolveDate(num, date = undefined){
+    if(date != undefined)
+      this.selectDate = this.localeMoment(date).format(DATE_FORMAT);
+
+    if(this.viewType === ViewType.WEEK) {
+      this.startDate = date != undefined ? this.localeMoment(date).startOf('week').format(DATE_FORMAT)
+        : this.localeMoment(this.startDate).add(num, 'weeks').format(DATE_FORMAT);
+      this.endDate = this.localeMoment(this.startDate).endOf('week').format(DATE_FORMAT);
+    }
+    else if(this.viewType === ViewType.DAY) {
+      this.startDate = date != undefined ? this.selectDate
+        : this.localeMoment(this.startDate).add(num, 'days').format(DATE_FORMAT);
+      this.endDate = this.startDate;
+    }
+    else if(this.viewType === ViewType.MONTH) {
+      this.startDate = date != undefined ? this.localeMoment(date).startOf('month').format(DATE_FORMAT)
+        : this.localeMoment(this.startDate).add(num, 'months').format(DATE_FORMAT);
+      this.endDate = this.localeMoment(this.startDate).endOf('month').format(DATE_FORMAT);
+    }
+    else if(this.viewType === ViewType.QUARTER) {
+      this.startDate = date != undefined ? this.localeMoment(date).startOf('quarter').format(DATE_FORMAT)
+        : this.localeMoment(this.startDate).add(num, 'quarters').format(DATE_FORMAT);
+      this.endDate = this.localeMoment(this.startDate).endOf('quarter').format(DATE_FORMAT);
+    }
+    else if(this.viewType === ViewType.YEAR) {
+      this.startDate = date != undefined ? this.localeMoment(date).startOf('year').format(DATE_FORMAT)
+        : this.localeMoment(this.startDate).add(num, 'years').format(DATE_FORMAT);
+      this.endDate = this.localeMoment(this.startDate).endOf('year').format(DATE_FORMAT);
+    }
+    else if(this.viewType === ViewType.CUSTOM /*|| this.viewType === ViewType.Custom1 || this.viewType === ViewType.Custom2*/) {
+      if(this.behaviors.getCustomDateFunc != undefined){
+        let customDate = this.behaviors.getCustomDateFunc(this, num, date);
+        this.startDate = customDate.startDate;
+        this.endDate = customDate.endDate;
+        if(!!customDate.cellUnit)
+          this.cellUnit = customDate.cellUnit;
+      } else {
+        throw new Error('This is custom view type, set behaviors.getCustomDateFunc func to resolve the time window(startDate and endDate) yourself');
+      }
+    }
+  }
+
+  _createHeaders() {
+    let headers = [],
+      start = this.localeMoment(this.startDate),
+      end = this.localeMoment(this.endDate),
+      header = start;
+
+    if(this.showAgenda){
+      headers.push({time: header.format(DATETIME_FORMAT), nonWorkingTime: false});
+    }
+    else {
+      if (this.cellUnit === CellUnits.HOUR) {
+        start = start.add(this.config.dayStartFrom, 'hours');
+        end = end.add(this.config.dayStopTo, 'hours');
+        header = start;
+
+        while (header >= start && header <= end) {
+          let minuteSteps = this.getMinuteStepsInHour();
+          for(let i=0; i<minuteSteps; i++){
+            let hour = header.hour();
+            if(hour >= this.config.dayStartFrom && hour <= this.config.dayStopTo) {
+              let time = header.format(DATETIME_FORMAT);
+              let nonWorkingTime = this.behaviors.isNonWorkingTimeFunc(this, time);
+              headers.push({ time: time, nonWorkingTime: nonWorkingTime });
+            }
+
+            header = header.add(this.config.minuteStep, 'minutes');
+          }
+        }
+      }
+      else {
+        while (header >= start && header <= end) {
+          let time = header.format(DATETIME_FORMAT);
+          let dayOfWEEK = header.weekday();
+          if( this.config.displayWeekend || (dayOfWEEK !== 0 && dayOfWEEK !== 6))
+          {
+            let nonWorkingTime = this.behaviors.isNonWorkingTimeFunc(this, time);
+            headers.push({ time: time, nonWorkingTime: nonWorkingTime });
+          }
+
+          header = header.add(1, 'days');
+        }
+      }
+    }
+
+    this.headers = headers;
+  }
+
+  _createInitHeaderEvents(header) {
+    let start = this.localeMoment(header.time),
+      startValue = start.format(DATETIME_FORMAT);
+    let endValue = this.showAgenda ? (this.viewType === ViewType.WEEK ? start.add(1, 'weeks').format(DATETIME_FORMAT) : (
+      this.viewType === ViewType.DAY ? start.add(1, 'days').format(DATETIME_FORMAT) : (
+        this.viewType === ViewType.MONTH ? start.add(1, 'months').format(DATETIME_FORMAT) : (
+          this.viewType === ViewType.YEAR ? start.add(1, 'years').format(DATETIME_FORMAT) : (
+            this.viewType === ViewType.QUARTER ? start.add(1, 'quarters').format(DATETIME_FORMAT) :
+              this.localeMoment(this.endDate).add(1, 'days').format(DATETIME_FORMAT)
+          )
+        )
+      )
+    )) : (this.cellUnit === CellUnits.HOUR ?  start.add(this.config.minuteStep, 'minutes').format(DATETIME_FORMAT)
+      : start.add(1, 'days').format(DATETIME_FORMAT));
+    return {
+      time:  header.time,
+      nonWorkingTime: header.nonWorkingTime,
+      start: startValue,
+      end:   endValue,
+      count: 0,
+      addMore: 0,
+      addMoreIndex: 0,
+      events: [,,,],
+    };
+  }
+
+  _createHeaderEvent(render, span, eventItem) {
+    return {
+      render: render,
+      span: span,
+      eventItem: eventItem
+    };
+  }
+
+  _getEventSlotId(event){
+    return this.isEventPerspective ? this._getEventGroupId(event) : event.resourceId;
+  }
+
+  _getEventGroupId(event){
+    return !!event.groupId ? event.groupId.toString() : event.id.toString();
+  }
+
+  _createInitRenderData(isEventPerspective, eventGroups, resources, headers) {
+    let slots = isEventPerspective ? eventGroups : resources;
+    let slotTree = [],
+      slotMap = new Map();
+    slots.forEach((slot) => {
+      let headerEvents = headers.map((header) => {
+        return this._createInitHeaderEvents(header);
+      });
+
+      let slotRenderData = {
+        slotId: slot.id,
+        slotName: slot.name,
+        parentId: slot.parentId,
+        groupOnly: slot.groupOnly,
+        hasSummary: false,
+        rowMaxCount: 0,
+        rowHeight: this.config.nonAgendaSlotMinHeight !== 0 ? this.config.nonAgendaSlotMinHeight : this.config.eventItemLineHeight + 2,
+        headerItems: headerEvents,
+        indent: 0,
+        hasChildren: false,
+        expanded: true,
+        render: true,
+      };
+      let id = slot.id;
+      let value = undefined;
+      if(slotMap.has(id)) {
+        value = slotMap.get(id);
+        value.data = slotRenderData;
+      } else {
+        value = {
+          data: slotRenderData,
+          children: [],
+        };
+        slotMap.set(id, value);
+      }
+
+      let parentId = slot.parentId;
+      if(!parentId || parentId === id) {
+        slotTree.push(value);
+      } else {
+        let parentValue = undefined;
+        if(slotMap.has(parentId)) {
+          parentValue = slotMap.get(parentId);
+        } else {
+          parentValue = {
+            data: undefined,
+            children: [],
+          };
+          slotMap.set(parentId, parentValue);
+        }
+
+        parentValue.children.push(value);
+      }
+    });
+
+    let slotStack = [];
+    let i;
+    for(i=slotTree.length-1; i>=0; i--) {
+      slotStack.push(slotTree[i]);
+    }
+    let initRenderData = [];
+    let currentNode:any = undefined;
+    while(slotStack.length > 0) {
+      currentNode = slotStack.pop();
+      if(currentNode.data.indent > 0) {
+        currentNode.data.render = this.config.defaultExpanded;
+      }
+      if(currentNode.children.length > 0) {
+        currentNode.data.hasChildren = true;
+        currentNode.data.expanded = this.config.defaultExpanded;
+      }
+      initRenderData.push(currentNode.data);
+
+      for(i=currentNode.children.length -1; i>=0; i--) {
+        currentNode.children[i].data.indent = currentNode.data.indent + 1;
+        slotStack.push(currentNode.children[i]);
+      }
+    }
+
+    return initRenderData;
+  }
+
+  _getSpan(startTime, endTime, headers){
+    if(this.showAgenda) return 1;
+
+    let start = this.localeMoment(startTime),
+      end = this.localeMoment(endTime),
+      span = 0;
+
+    for(let header of headers) {
+      let spanStart = this.localeMoment(header.time),
+        spanEnd = this.cellUnit === CellUnits.HOUR ? this.localeMoment(header.time).add(this.config.minuteStep, 'minutes')
+          : this.localeMoment(header.time).add(1, 'days');
+
+      if(spanStart < end && spanEnd > start) {
+        span++;
+      }
+    }
+
+    return span;
+  }
+
+  _validateMinuteStep(minuteStep) {
+    if (60 % minuteStep !== 0) {
+      console.error('Minute step is not set properly - 60 minutes must be divisible without remainder by this number');
+      throw new Error('Minute step is not set properly - 60 minutes must be divisible without remainder by this number');
+    }
+  }
+
+  _createRenderData() {
+    let initRenderData = this._createInitRenderData(this.isEventPerspective, this.eventGroups, this.resources, this.headers);
+    //this.events.sort(this._compare);
+    let cellMaxEventsCount = this.getCellMaxEvents();
+    const cellMaxEventsCountValue = 30;
+
+    this.events.forEach((item) => {
+      let resourceEventsList = initRenderData.filter(x => x.slotId === this._getEventSlotId(item));
+      if(resourceEventsList.length > 0) {
+        let resourceEvents = resourceEventsList[0];
+        let span = this._getSpan(item.start, item.end, this.headers);
+        let eventStart = this.localeMoment(item.start), eventEnd = this.localeMoment(item.end);
+        let pos = -1;
+
+        resourceEvents.headerItems.forEach((header, index) => {
+          let headerStart = this.localeMoment(header.start), headerEnd = this.localeMoment(header.end);
+          if(headerEnd > eventStart && headerStart < eventEnd) {
+            header.count = header.count + 1;
+            if(header.count > resourceEvents.rowMaxCount) {
+              resourceEvents.rowMaxCount = header.count;
+              let rowsCount = (cellMaxEventsCount <= cellMaxEventsCountValue && resourceEvents.rowMaxCount > cellMaxEventsCount) ? cellMaxEventsCount : resourceEvents.rowMaxCount;
+              let newRowHeight = rowsCount * this.config.eventItemLineHeight + (this.config.creatable && this.config.checkConflict === false ? 20 : 2);
+              if(newRowHeight > resourceEvents.rowHeight)
+                resourceEvents.rowHeight = newRowHeight;
+            }
+
+            if(pos === -1)
+            {
+              let tmp = 0;
+              while (header.events[tmp] !== undefined)
+                tmp++;
+
+              pos = tmp;
+            }
+            let render = headerStart <= eventStart || index === 0;
+            if(render === false){
+              let previousHeader = resourceEvents.headerItems[index - 1];
+              let previousHeaderStart = this.localeMoment(previousHeader.start), previousHeaderEnd = this.localeMoment(previousHeader.end);
+              if(previousHeaderEnd <= eventStart || previousHeaderStart >= eventEnd)
+                render = true;
+            }
+            header.events[pos] = this._createHeaderEvent(render, span, item);
+          }
+        });
+      }
+    });
+
+    if(cellMaxEventsCount <= cellMaxEventsCountValue || this.behaviors.getSummaryFunc !== undefined) {
+      initRenderData.forEach((resourceEvents) => {
+        let hasSummary = false;
+
+        resourceEvents.headerItems.forEach((headerItem) => {
+          if(cellMaxEventsCount <= cellMaxEventsCountValue) {
+            let renderItemsCount = 0, addMoreIndex = 0, index = 0;
+            while (index < cellMaxEventsCount - 1) {
+              if(headerItem.events[index] !== undefined) {
+                renderItemsCount++;
+                addMoreIndex = index + 1;
+              }
+
+              index++;
+            }
+
+            if(headerItem.events[index] !== undefined) {
+              if(renderItemsCount + 1 < headerItem.count) {
+                headerItem.addMore = headerItem.count - renderItemsCount;
+                headerItem.addMoreIndex = addMoreIndex;
+              }
+            }
+            else {
+              if(renderItemsCount < headerItem.count) {
+                headerItem.addMore = headerItem.count - renderItemsCount;
+                headerItem.addMoreIndex = addMoreIndex;
+              }
+            }
+          }
+
+          if(this.behaviors.getSummaryFunc !== undefined){
+            let events = [];
+            headerItem.events.forEach((e) => {
+              if(!!e && !!e.eventItem)
+                events.push(e.eventItem);
+            });
+
+            headerItem.summary = this.behaviors.getSummaryFunc(this, events, resourceEvents.slotId, resourceEvents.slotName, headerItem.start, headerItem.end);
+            if(!!headerItem.summary && headerItem.summary.text != undefined)
+              hasSummary = true;
+          }
+        });
+
+        resourceEvents.hasSummary = hasSummary;
+        if(hasSummary) {
+          let rowsCount = (cellMaxEventsCount <= cellMaxEventsCountValue && resourceEvents.rowMaxCount > cellMaxEventsCount) ? cellMaxEventsCount : resourceEvents.rowMaxCount;
+          let newRowHeight = (rowsCount + 1) * this.config.eventItemLineHeight + (this.config.creatable && this.config.checkConflict === false ? 20 : 2);
+          if(newRowHeight > resourceEvents.rowHeight)
+            resourceEvents.rowHeight = newRowHeight;
+        }
+      });
+    }
+
+    this.renderData = initRenderData;
+  }
+}

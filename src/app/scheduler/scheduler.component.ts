@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'pl-scheduler',
+  selector: 'pl-lib-scheduler',
   templateUrl: './scheduler.component.html',
   styleUrls: ['./scheduler.component.scss']
 })
