@@ -49,10 +49,11 @@
               <div class="scheduler-content">
                 <table class="scheduler-content-table">
                   <tbody>
-                  <tr *ngFor="let option of pResourceData" class="resource-item" [style.height.px]="getResourceHeight(option)">
+                  <ng-content></ng-content>
+<!--                  <tr *ngFor="let option of pResourceData" class="resource-item" [style.height.px]="getResourceHeight(option)">
                     <td class="w-748">
                       <div class="event-group-container">
-                        <!--Event container that will contain events for staff-->
+                        &lt;!&ndash;Event container that will contain events for staff&ndash;&gt;
                         <div [style.width.px]="(schedulerData?.headers?.length * 100)"
                              class="w-748 event-group"
                              *ngFor="let groupKey of getEventGroupKeys(option);">
@@ -67,9 +68,10 @@
                                 <div class="popover above"
                                      [style.left.px]="getEventItemWidth(event?.start, event?.end)/3" #tooltip>
                                   <div>
-                                    <div>Hello</div>
-                                    <br>
-                                    <div>Hola</div>
+                                    <div class="row">Start date{{event?.start}}</div>
+                                    <div class="row">End date{{event?.end}}</div>
+                                    <div class="row">Description{{event?.description}}</div>
+
                                   </div>
                                 </div>
                               </div>
@@ -77,7 +79,7 @@
                         </div>
                       </div>
                     </td>
-                  </tr>
+                  </tr>-->
                   </tbody>
                 </table>
               </div>

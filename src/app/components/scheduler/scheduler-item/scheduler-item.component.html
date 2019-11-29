@@ -1,4 +1,4 @@
-<ng-container>
+<ng-container *ngFor="let event of getEventGroupData(groupKey,option)">
   <div *ngIf="isValidDate(event?.end)" class="event-item"
        (mouseover)="showTooltip($event,tooltip)"
        [style.background]="option?.color"
@@ -8,10 +8,9 @@
     <div class="popover above"
          [style.left.px]="getEventItemWidth(event?.start, event?.end)/3" #tooltip>
       <div>
-        <div class="row">Start date{{event?.start}}</div>
-        <div class="row">End date{{event?.end}}</div>
-        <div class="row">Description{{event?.description}}</div>
-
+        <div>Hello</div>
+        <br>
+        <div>Hola</div>
       </div>
     </div>
   </div>

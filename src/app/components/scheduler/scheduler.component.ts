@@ -64,32 +64,23 @@ export class SchedulerComponent implements OnInit {
 
   processResourceData(resourceEventData: Array<ResourceData>) {
     const d = resourceEventData;
-    console.log('d', d);
     d.forEach((resource: ResourceData, resourceIndex: number) => {
       resource.color = this.useRandomColor ? this.getRandomColor(resourceIndex) : this.defaultItemColor;
-      let mapData: Map<number, Array<any>> = new Map<number, Array<any>>();
-      let mapObj: any = {};
       resource.events.sort((a, b) => (a.start > b.start) ? 1 : -1);
       resource.events.forEach((event: EventData, index) => {
-        // debugger;
         const arr = [];
         if (index == 0) {
           arr.push(event);
-          mapData.set(index, arr);
           resource.eventGroups[index] = arr;
         } else {
-          for (let i = 0; i < mapData.size; i++) {
-            const groupData = mapData.get(i);
-            console.log(i);
+          for (let i = 0; i < resource.eventGroups.length; i++) {
+            const groupData = resource.eventGroups[i];
             const groupKey = i;
             const hasConflict = groupData.findIndex(obj => this.hasConflict(event, obj)) > -1;
             const hasEvent = groupData.findIndex(obj => this.isSame(event, obj)) > -1;
-
             if (hasConflict && !hasEvent) {
-              if (!this.mapHasNext(mapData, groupKey)) {
+              if (!this.groupHasNext(resource.eventGroups, groupKey)) {
                 arr.push(event);
-                console.log('Curr Key', this.getLastKey(resource.eventGroups));
-                mapData.set((this.getLastKey(resource.eventGroups)+1), arr);
                 resource.eventGroups[this.getLastKey(resource.eventGroups)+1] = arr;
                 break;
               }
@@ -100,13 +91,15 @@ export class SchedulerComponent implements OnInit {
           }
         }
       });
-      console.log('Group maps', mapData, resource);
     });
     return d;
   }
 
   private mapHasNext(map: Map<number, Array<any>>, currentKey: number): boolean {
     return ((currentKey + 1) < map.size);
+  }
+  private groupHasNext(arr: any[], currentKey: number): boolean {
+    return ((currentKey + 1) < arr.length);
   }
 
   private hasConflict(eventData1: EventData, eventData2: EventData): boolean {

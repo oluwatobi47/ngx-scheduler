@@ -4,7 +4,7 @@ import {ViewType} from "../../scheduler/enums/view-types";
 import {SchedulerData} from "./scheduler-data";
 import {resource} from "selenium-webdriver/http";
 
-export type EventGroup = {[key: string]: Array<EventData>};
+export type EventGroup = {[key: string]: Array<EventData[]>};
 export class TestData {
   id: number;
   start: string;
@@ -12,7 +12,7 @@ export class TestData {
   resourceId: string;
   title: string;
   description: string;
-  eventGroups: EventGroup;
+  eventGroups: Array<EventData[]>;
   duration: number;
   events: EventData[];
   color?: string;
@@ -44,7 +44,7 @@ export class TestComponent implements OnInit {
       title: 'James Bond',
       description: 'James Bond Leave 3(8 days)',
       duration: 8,
-      eventGroups: {},
+      eventGroups: [],
       color: null,
       events: [
         {
@@ -86,7 +86,7 @@ export class TestComponent implements OnInit {
       title: 'John Doe',
       description: 'John Doe Leave 2 (5 days)',
       duration: 5,
-      eventGroups: {},
+      eventGroups: [],
       color: null,
       events: [
         {

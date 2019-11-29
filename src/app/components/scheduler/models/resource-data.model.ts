@@ -17,7 +17,7 @@ interface IResourceData {
   title: string;
   description: string;
   resourceId: string;
-  eventGroups: EventGroup;
+  eventGroups: Array<EventData[]>;
   events: EventData[];
   color?: string;
   data?: any;
@@ -28,7 +28,7 @@ export class ResourceData implements IResourceData{
   title: string;
   description: string;
   resourceId: string;
-  eventGroups: EventGroup;
+  eventGroups: Array<EventData[]>;
   events: EventData[];
   color?: string;
   data?: any;
@@ -39,7 +39,7 @@ export class ResourceData implements IResourceData{
     this.title = data.title || '';
     this.description = data.description || '';
     this.resourceId = data.resourceId || null;
-    this.eventGroups = data.eventGroups || {};
+    this.eventGroups = data.eventGroups || [];
     this.events = data.events || [];
     this.color = data.color || '';
     this.data = data.data || {};

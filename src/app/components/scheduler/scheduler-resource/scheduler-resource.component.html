@@ -1,27 +1,8 @@
-<td class="w-748">
-  <div class="event-group-container">
-    <!--Event container that will contain events for staff-->
-    <div [style.width.px]="(schedulerData?.headers?.length * 100)"
-         class="w-748 event-group"
-         *ngFor="let groupKey of getEventGroupKeys(option);">
-
-      <ng-container *ngFor="let event of getEventGroupData(groupKey,option)">
-        <div *ngIf="isValidDate(event?.end)" class="event-item"
-             (mouseover)="showTooltip($event,tooltip)"
-             [style.background]="option?.color"
-             [style.width.px]="getEventItemWidth(event?.start, event?.end)"
-             [style.left.px]="getEventItemPosition(event?.start)">
-          {{event?.description}}
-          <div class="popover above"
-               [style.left.px]="getEventItemWidth(event?.start, event?.end)/3" #tooltip>
-            <div>
-              <div>Hello</div>
-              <br>
-              <div>Hola</div>
-            </div>
-          </div>
-        </div>
-      </ng-container>
+<tr class="resource-item" [style.height.px]="getResourceHeight(resource)">
+  <td class="w-748">
+    <div class="event-group-container">
+      <!--Event container that will contain events for staff-->
+      <ng-content></ng-content>
     </div>
-  </div>
-</td>
+  </td>
+</tr>
