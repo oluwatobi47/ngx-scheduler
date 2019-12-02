@@ -1,18 +1,20 @@
-<ng-container>
-  <div *ngIf="isValidDate(event?.end)" class="event-item"
+<!--<div class="event-group">-->
+
+<!--<ng-container *ngFor="let event of groupData">-->
+  <div *ngIf="isValidDate(eventData?.end)" class="event-item"
        (mouseover)="showTooltip($event,tooltip)"
-       [style.background]="option?.color"
-       [style.width.px]="getEventItemWidth(event?.start, event?.end)"
-       [style.left.px]="getEventItemPosition(event?.start)">
-    {{event?.description}}
+       [style.background]="resourceColor"
+       [style.width.px]="getEventItemWidth(eventData?.start, eventData?.end)"
+       [style.left.px]="getEventItemPosition(eventData?.start)">
+    {{eventData?.description}}
     <div class="popover above"
          [style.left.px]="getEventItemWidth(event?.start, event?.end)/3" #tooltip>
       <div>
-        <div class="row">Start date{{event?.start}}</div>
-        <div class="row">End date{{event?.end}}</div>
-        <div class="row">Description{{event?.description}}</div>
-
+        <ng-content></ng-content>
       </div>
     </div>
   </div>
-</ng-container>
+<!--</ng-container>-->
+
+  <!--<ng-content></ng-content>-->
+<!--</div>-->

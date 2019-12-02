@@ -1,5 +1,4 @@
-<!--
-<div *ngIf="processedData?.length">
+<!--<div *ngIf="processedData?.length">
   <table class="table" style="width: 1000px">
     <thead>
       <tr colspan="2">
@@ -69,10 +68,15 @@
                             <div [style.width.px]="(schedulerData?.headers?.length * 100)"
                                  class="w-748 event-group"
                                  *ngFor="let groupKey of getEventGroupKeys(option);">
-                              <span *ngFor="let event of getEventGroupData(groupKey,option)" class="event-item"
-                                   [style.background]="option?.color" [style.width.px]="getEventItemWidth(event?.start, event?.end)" [style.left.px]="getEventItemPosition(event?.start)">
+                              <ng-container *ngFor="let event of getEventGroupData(groupKey,option)">
+                              <span *ngIf="isValidDate(event?.end)"
+                                    class="event-item"
+                                    [style.background]="option?.color"
+                                    [style.width.px]="getEventItemWidth(event?.start, event?.end)"
+                                    [style.left.px]="getEventItemPosition(event?.start)">
                                 {{event?.description}}
                               </span>
+                              </ng-container>
                             </div>
                           </div>
                         </td>
@@ -102,25 +106,41 @@
       </tr>
     </tbody>
   </table>
-</div>
--->
+</div>-->
+
+
 <pl-scheduler [resourceData]="sampleData"
-              [calenderStart]="'2019-12-01'"
-              [calenderEnd]="'2019-12-31'">
-  <ng-container *ngFor="let resource of sampleData">
-    <pl-scheduler-resource [resource]="resource">
+              [calenderStart]="'2019-12-13'"
+              [calenderEnd]="'2019-12-27'">
+    <pl-scheduler-resource *ngFor="let resource of sampleData" [resource]="resource">
       <pl-resource-event-group *ngFor="let eventGroup of resource?.eventGroups">
-        <pl-scheduler-data [calenderStart]="'2019-12-01'"
-                           [calenderEnd]="'2019-12-31'"
-                           [resourceColor]="resource?.color" *ngFor="let event of eventGroup">
-          <pl-scheduler-item>
-            <div>
-              Hello word- {{event?.description}}
+        <pl-scheduler-data *ngFor="let event of eventGroup" [eventData]="event"
+                           [calenderStart]="'2019-12-13'"
+                           [calenderEnd]="'2019-12-27'"
+                           [resourceColor]="resource?.color"><!--*ngFor="let event of eventGroup"-->
+          <div class="row">
+            <div style="width: 100%">
+              Hello word
             </div>
-          </pl-scheduler-item>
+
+            <div style="width: 100%">
+              Hello word
+            </div>
+
+            <div style="width: 100%">
+              Hello word
+            </div>
+
+            <div style="width: 100%">
+              Hello word
+            </div>
+
+            <div style="width: 100%">
+              Hello word
+            </div>
+          </div>
         </pl-scheduler-data>
       </pl-resource-event-group>
     </pl-scheduler-resource>
-  </ng-container>
 </pl-scheduler>
 

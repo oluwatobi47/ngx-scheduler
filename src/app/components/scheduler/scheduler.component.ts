@@ -1,10 +1,11 @@
-import {Component, ContentChild, Input, OnInit} from '@angular/core';
+import {Component, ContentChild, ContentChildren, Input, OnInit, QueryList} from '@angular/core';
 import {ViewType} from "./enums/view-types";
 import {SchedulerData} from "./models/scheduler-data.model";
 import {EventData, ResourceData} from "./models/resource-data.model";
 import * as moment from 'moment';
 import * as $ from 'jquery';
 import {SchedulerDataComponent} from "./scheduler-data/scheduler-data.component";
+import {SchedulerResourceComponent} from "./scheduler-resource/scheduler-resource.component";
 
 @Component({
   selector: 'pl-scheduler',
@@ -13,9 +14,6 @@ import {SchedulerDataComponent} from "./scheduler-data/scheduler-data.component"
 })
 export class SchedulerComponent implements OnInit {
 
-  @ContentChild(SchedulerDataComponent, {static: false})
-  schedulerTooltipComponent: SchedulerDataComponent;
-
   @Input() resourceData: ResourceData[] = [];
   @Input() pResourceData: ResourceData[] = [];
   @Input() calenderEnd: string | number;
@@ -23,7 +21,7 @@ export class SchedulerComponent implements OnInit {
 
   @Input() resourceHeader: string = 'Resource Name'
 
-  @Input() viewType?: ViewType = ViewType.MONTH;
+  @Input() viewType?: ViewType = ViewType.CUSTOM;
   @Input() useRandomColor?: boolean = true;
   @Input() colors?: any = {
     0: ['#19887A','#FF8E39','#00EB7E'],
@@ -33,6 +31,9 @@ export class SchedulerComponent implements OnInit {
   @Input() defaultItemColor?: string = '#595959';//'#FF8E39'
   @Input() weekendColor?: string = '#eaeaea'; //'#45966920'
 
+
+  @ContentChildren(SchedulerDataComponent) schedulerItems: QueryList<SchedulerDataComponent>;
+
   schedulerData: SchedulerData;
 
 
@@ -41,12 +42,17 @@ export class SchedulerComponent implements OnInit {
   ngOnInit() {
     if(this.resourceData) {
       this.loadScheduler();
+      console.log('this.schedulerItems', this.schedulerItems);
+      if(this.schedulerItems)
+      this.schedulerItems.forEach((obj => {
+        console.log('obj', obj);
+      }));
     }
   }
 
   initScheduler(){
     this.schedulerData = new SchedulerData(this.calenderStart || this.currentDateString, this.viewType)
-      .setStartDate(this.calenderStart).setEndDate(this.calenderEnd);
+      .setStartDate(this.calenderStart, true).setEndDate(this.calenderEnd, true);
     this.schedulerData._createHeaders();
   }
 

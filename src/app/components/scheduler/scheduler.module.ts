@@ -13,6 +13,6 @@ import { ResourceEventGroupComponent } from './resource-event-group/resource-eve
   declarations: [SchedulerComponent, SchedulerDataComponent, SchedulerResourceComponent, SchedulerItemComponent, ResourceEventGroupComponent],
   imports: [
     CommonModule
-  ], exports: [SchedulerComponent]
+  ], exports: [SchedulerComponent, SchedulerDataComponent, SchedulerResourceComponent, SchedulerItemComponent, ResourceEventGroupComponent]
 })
 export class SchedulerModule { }

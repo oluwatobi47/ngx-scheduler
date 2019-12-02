@@ -67,7 +67,7 @@ export class TestComponent implements OnInit {
           end: '2019-12-19 23:30:00',
           description: 'James Bond Leave 3(8 days)',
           duration: 8
-        },
+        }/*,
 
         {
           id: 7,
@@ -75,7 +75,7 @@ export class TestComponent implements OnInit {
           end: '2019-12-29 23:30:00',
           description: 'James Bond Leave 3(8 days)',
           duration: 8
-        },
+        },*/
       ]
     },
     {
@@ -460,7 +460,7 @@ export class TestComponent implements OnInit {
 
   ngOnInit() {
     this.schedulerData = new SchedulerData('2019-12-18', ViewType.MONTH)
-      .setStartDate('2019-01-01').setEndDate('2019-12-31');
+      .setStartDate('2019-12-01').setEndDate('2019-12-31');
     // const schedulerData: SchedulerData = new SchedulerData('2019-12-18', ViewType.MONTH);
     // schedulerData.startDate
     // schedulerData.endDate =
@@ -468,11 +468,10 @@ export class TestComponent implements OnInit {
     console.log(this.schedulerData.headers);
 
     // this.orderResourceEvents(this.sampleData);
-/*    if(!this.processedData.length) {
-      // this.processedData = this.processEvents(this.sampleData);
-    }*/
+    if(!this.processedData.length) {
+      this.processedData = this.processEvents(this.sampleData);
+    }
   }
-/*
 
   onDateSelected(event) {
     console.log('Value', event.target);
@@ -484,6 +483,10 @@ export class TestComponent implements OnInit {
       return
     }
     return (map.size);
+  }
+
+  isValidDate(date){
+    return moment(date).isSameOrAfter(this.schedulerData.startDate);
   }
 
   processEvents(resourceEventData: Array<TestData>) {
@@ -604,6 +607,5 @@ export class TestComponent implements OnInit {
     const result = keys.length ? parseInt(keys.reverse()[0]): 0;
     return result;
   }
-*/
 
 }

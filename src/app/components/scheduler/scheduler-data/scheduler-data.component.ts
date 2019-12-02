@@ -1,17 +1,19 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {ResourceData} from "../models/resource-data.model";
+import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
+import {EventData, ResourceData} from "../models/resource-data.model";
 import * as moment from "moment";
 
 @Component({
   selector: 'pl-scheduler-data',
   templateUrl: './scheduler-data.component.html',
-  styleUrls: ['./scheduler-data.component.scss']
+  styleUrls: ['./scheduler-data.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class SchedulerDataComponent implements OnInit {
 
   @Input() resourceColor: string;
   @Input() calenderEnd: string | number;
   @Input() calenderStart: string | number;
+  @Input() eventData: EventData;
 
   constructor() { }
 

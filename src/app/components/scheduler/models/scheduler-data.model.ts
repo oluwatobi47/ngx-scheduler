@@ -213,15 +213,26 @@ export class SchedulerData {
   }
 
 
-  setStartDate(date: string | number) {
-    this.startDate = date != undefined ? this.localeMoment(date).startOf('month').format(DATE_FORMAT)
-      : this.localeMoment(this.startDate).add(0, 'months').format(DATE_FORMAT);
+  setStartDate(date: string | number, exactDate?: boolean) {
+
+    if(exactDate) {
+      this.startDate = date != undefined ? this.localeMoment(date).format(DATE_FORMAT)
+        : this.localeMoment(this.startDate).add(0, 'months').format(DATE_FORMAT);
+    } else {
+      this.startDate = date != undefined ? this.localeMoment(date).startOf('month').format(DATE_FORMAT)
+        : this.localeMoment(this.startDate).add(0, 'months').format(DATE_FORMAT);
+    }
     return this;
   }
 
-  setEndDate(date: string | number) {
-    this.endDate = date != undefined ? this.localeMoment(date).endOf('month').format(DATE_FORMAT)
-      : this.localeMoment(this.startDate).add(0, 'months').format(DATE_FORMAT);
+  setEndDate(date: string | number, exactDate?: boolean) {
+    if(exactDate) {
+      this.endDate = date != undefined ? this.localeMoment(date).format(DATE_FORMAT)
+        : this.localeMoment(this.startDate).add(1, 'months').format(DATE_FORMAT);
+    } else {
+      this.endDate = date != undefined ? this.localeMoment(date).endOf('month').format(DATE_FORMAT)
+        : this.localeMoment(this.startDate).add(1, 'months').format(DATE_FORMAT);
+    }
     return this;
   }
 
@@ -272,7 +283,7 @@ export class SchedulerData {
       this.endDate = this.localeMoment(this.startDate).endOf('year').format(DATE_FORMAT);
     }
     else if(this.viewType === ViewType.CUSTOM /*|| this.viewType === ViewType.Custom1 || this.viewType === ViewType.Custom2*/) {
-      if(this.behaviors.getCustomDateFunc != undefined){
+/*      if(this.behaviors.getCustomDateFunc != undefined){
         let customDate = this.behaviors.getCustomDateFunc(this, num, date);
         this.startDate = customDate.startDate;
         this.endDate = customDate.endDate;
@@ -280,7 +291,7 @@ export class SchedulerData {
           this.cellUnit = customDate.cellUnit;
       } else {
         throw new Error('This is custom view type, set behaviors.getCustomDateFunc func to resolve the time window(startDate and endDate) yourself');
-      }
+      }*/
     }
   }
 

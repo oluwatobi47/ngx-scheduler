@@ -1,4 +1,4 @@
-<div *ngIf="pResourceData?.length">
+<ng-container *ngIf="pResourceData?.length">
   <table class="table" style="width: 1000px">
     <tbody>
     <tr>
@@ -7,20 +7,18 @@
           <div class="resource-header-container">
             <span>{{resourceHeader}}</span>
           </div>
-          <div>
-            <div class="w-250">
-              <table class="resource-table">
-                <tbody>
-                <tr *ngFor="let option of pResourceData" class="resource-item" [style.height.px]="getResourceHeight(option)">
-                  <td>
-                    <div>
-                      <span class="resource-title">{{option?.title}}</span>
-                    </div>
-                  </td>
-                </tr>
-                </tbody>
-              </table>
-            </div>
+          <div class="w-250">
+            <table class="resource-table">
+              <tbody>
+              <tr *ngFor="let option of pResourceData" class="resource-item" [style.height.px]="getResourceHeight(option)">
+                <td style="border-left: 0.25rem solid;" [style.border-left-color]="option?.color">
+                  <div>
+                    <span class="resource-title">{{option?.title}}</span>
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </td>
@@ -49,49 +47,17 @@
               <div class="scheduler-content">
                 <table class="scheduler-content-table">
                   <tbody>
-                  <ng-content></ng-content>
-<!--                  <tr *ngFor="let option of pResourceData" class="resource-item" [style.height.px]="getResourceHeight(option)">
-                    <td class="w-748">
-                      <div class="event-group-container">
-                        &lt;!&ndash;Event container that will contain events for staff&ndash;&gt;
-                        <div [style.width.px]="(schedulerData?.headers?.length * 100)"
-                             class="w-748 event-group"
-                             *ngFor="let groupKey of getEventGroupKeys(option);">
-
-                          <ng-container *ngFor="let event of getEventGroupData(groupKey,option)">
-                              <div *ngIf="isValidDate(event?.end)" class="event-item"
-                                    (mouseover)="showTooltip($event,tooltip)"
-                                    [style.background]="option?.color"
-                                    [style.width.px]="getEventItemWidth(event?.start, event?.end)"
-                                    [style.left.px]="getEventItemPosition(event?.start)">
-                                {{event?.description}}
-                                <div class="popover above"
-                                     [style.left.px]="getEventItemWidth(event?.start, event?.end)/3" #tooltip>
-                                  <div>
-                                    <div class="row">Start date{{event?.start}}</div>
-                                    <div class="row">End date{{event?.end}}</div>
-                                    <div class="row">Description{{event?.description}}</div>
-
-                                  </div>
-                                </div>
-                              </div>
-                          </ng-container>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>-->
+                    <ng-content></ng-content>
                   </tbody>
                 </table>
               </div>
+              <!--Background grid-->
               <div class="scheduler-bg" [style.width.px]="(schedulerData?.headers?.length * 100)">
                 <table class="scheduler-bg-table">
                   <tbody>
                   <tr *ngFor="let option of pResourceData" class="resource-item" [style.height.px]="getResourceHeight(option)">
 
                     <td *ngFor="let header of schedulerData?.headers; let i =index" style="width: 100px" [ngStyle]="{'background': header.nonWorkingTime ? weekendColor: 'transparent'}">
-                      <!--                        <div [attr.key]="i">
-                                                {{header?.time | date: 'MM, dd'}}
-                                              </div>-->
                     </td>
                   </tr>
 
@@ -105,4 +71,4 @@
     </tr>
     </tbody>
   </table>
-</div>
+</ng-container>
