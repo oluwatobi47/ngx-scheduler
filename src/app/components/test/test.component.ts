@@ -67,7 +67,7 @@ export class TestComponent implements OnInit {
           end: '2019-12-19 23:30:00',
           description: 'James Bond Leave 3(8 days)',
           duration: 8
-        }/*,
+        },
 
         {
           id: 7,
@@ -75,10 +75,10 @@ export class TestComponent implements OnInit {
           end: '2019-12-29 23:30:00',
           description: 'James Bond Leave 3(8 days)',
           duration: 8
-        },*/
+        },
       ]
     },
-    {
+/*    {
       id: 3,
       start: '2019-12-19 12:30:00',
       end: '2019-12-24 23:30:00',
@@ -96,7 +96,7 @@ export class TestComponent implements OnInit {
           description: 'John Doe Leave 3(8 days)',
           duration: 12
         },
-/*        {
+        {
           id: 2,
           start: '2019-12-18 12:30:00',
           end: '2019-12-26 23:30:00',
@@ -116,10 +116,10 @@ export class TestComponent implements OnInit {
           end: '2019-12-11 23:30:00',
           description: 'John Doe Test Previous Month',
           duration: 12
-        }*/
+        }
       ]
     },
-/*    {
+    {
       id: 4,
       start: '2019-12-19 12:30:00',
       end: '2019-12-24 23:30:00',
@@ -127,7 +127,7 @@ export class TestComponent implements OnInit {
       title: 'Kolawole Jones',
       description: 'Kolawole Jones Leave 2 (5 days)',
       duration: 5,
-      eventGroups: {},
+      eventGroups: [],
       color: null,
       events: [
         {
@@ -154,7 +154,7 @@ export class TestComponent implements OnInit {
       title: 'James Bond',
       description: 'James Bond Leave 3(8 days)',
       duration: 8,
-      eventGroups: {},
+      eventGroups: [],
       color: null,
       events: [
         {
@@ -174,7 +174,7 @@ export class TestComponent implements OnInit {
       title: 'John Doe',
       description: 'John Doe Leave 2 (5 days)',
       duration: 5,
-      eventGroups: {},
+      eventGroups: [],
       color: null,
       events: [
         {
@@ -201,7 +201,7 @@ export class TestComponent implements OnInit {
       title: 'Kolawole Jones',
       description: 'Kolawole Jones Leave 2 (5 days)',
       duration: 5,
-      eventGroups: {},
+      eventGroups: [],
       color: null,
       events: [
         {
@@ -228,7 +228,7 @@ export class TestComponent implements OnInit {
       title: 'Kolawole Jones',
       description: 'Kolawole Jones Leave 2 (5 days)',
       duration: 5,
-      eventGroups: {},
+      eventGroups: [],
       color: null,
       events: [
         {
@@ -255,7 +255,7 @@ export class TestComponent implements OnInit {
       title: 'James Bond',
       description: 'James Bond Leave 3(8 days)',
       duration: 8,
-      eventGroups: {},
+      eventGroups: [],
       color: null,
       events: [
         {
@@ -275,7 +275,7 @@ export class TestComponent implements OnInit {
       title: 'John Doe',
       description: 'John Doe Leave 2 (5 days)',
       duration: 5,
-      eventGroups: {},
+      eventGroups: [],
       color: null,
       events: [
         {
@@ -302,7 +302,7 @@ export class TestComponent implements OnInit {
       title: 'James Bond',
       description: 'James Bond Leave 3(8 days)',
       duration: 8,
-      eventGroups: {},
+      eventGroups: [],
       color: null,
       events: [
         {
@@ -322,7 +322,7 @@ export class TestComponent implements OnInit {
       title: 'John Doe',
       description: 'John Doe Leave 2 (5 days)',
       duration: 5,
-      eventGroups: {},
+      eventGroups: [],
       color: null,
       events: [
         {
@@ -349,7 +349,7 @@ export class TestComponent implements OnInit {
       title: 'Kolawole Jones',
       description: 'Kolawole Jones Leave 2 (5 days)',
       duration: 5,
-      eventGroups: {},
+      eventGroups: [],
       color: null,
       events: [
         {
@@ -376,7 +376,7 @@ export class TestComponent implements OnInit {
       title: 'Kolawole Jones',
       description: 'Kolawole Jones Leave 2 (5 days)',
       duration: 5,
-      eventGroups: {},
+      eventGroups: [],
       color: null,
       events: [
         {
@@ -403,7 +403,7 @@ export class TestComponent implements OnInit {
       title: 'John Doe',
       description: 'John Doe Leave 2 (5 days)',
       duration: 5,
-      eventGroups: {},
+      eventGroups: [],
       color: null,
       events: [
         {
@@ -430,7 +430,7 @@ export class TestComponent implements OnInit {
       title: 'James Bond',
       description: 'James Bond Leave 3(8 days)',
       duration: 8,
-      eventGroups: {},
+      eventGroups: [],
       color: null,
       events: [
         {
@@ -441,7 +441,7 @@ export class TestComponent implements OnInit {
           duration: 12
         }
       ]
-    },*/
+    }*/
   ];
   useRandomColor = true;
   colors: any = {
@@ -517,11 +517,11 @@ export class TestComponent implements OnInit {
                 arr.push(event);
                 console.log('Curr Key', this.getLastKey(resource.eventGroups));
                 mapData.set((this.getLastKey(resource.eventGroups)+1), arr);
-                resource.eventGroups[this.getLastKey(resource.eventGroups)+1] = arr;
+                resource.eventGroups[(this.getLastKey(resource.eventGroups)+1)] = arr;
                 break;
               }
             } else if (!hasConflict) {
-              groupData.push(event);
+              // groupData.push(event);
               break;
             }
           }

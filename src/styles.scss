@@ -11,7 +11,8 @@
 
 .resource-container {
   width: 250px;
-  vertical-align: top
+  vertical-align: top;
+  transform: translateX(4px);
 }
 
 .w-250 {
@@ -38,16 +39,23 @@
   border-bottom: 1px solid #e9e9e9;
   display: flex;
   align-items: center;
-  justify-content: center;
+  //justify-content: center;
+  text-align: left;
+  padding-left: 20px;
+  font-weight: 600;
 }
 
 .resource-item {
   height: 30px;
+  text-align: left;
 }
 
 .resource-title {
   white-space: nowrap;
   overflow: hidden;
+  text-align: left;
+  padding-left: 20px;
+  font-weight: 600;
   text-overflow: ellipsis;
 }
 
@@ -133,9 +141,9 @@ table.resource-table tr td:last-child, /*table.scheduler-bg-table tr td:last-chi
 
 .event-item{
   color: #fff;
-  padding: 2px 2px 2px 5px;
+  padding: 2px 2px 2px 15px;
   font-size: 11px;
-  border-radius: 5px;
+  border-radius: 15px;
   margin-left: 2px;
   margin-right: 5px;
   position: absolute;

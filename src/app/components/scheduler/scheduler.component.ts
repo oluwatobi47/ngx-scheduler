@@ -1,4 +1,4 @@
-import {Component, ContentChild, ContentChildren, Input, OnInit, QueryList} from '@angular/core';
+import {AfterViewInit, Component, ContentChild, ContentChildren, Input, OnInit, QueryList} from '@angular/core';
 import {ViewType} from "./enums/view-types";
 import {SchedulerData} from "./models/scheduler-data.model";
 import {EventData, ResourceData} from "./models/resource-data.model";
@@ -12,7 +12,7 @@ import {SchedulerResourceComponent} from "./scheduler-resource/scheduler-resourc
   templateUrl: './scheduler.component.html',
   styleUrls: ['./scheduler.component.scss']
 })
-export class SchedulerComponent implements OnInit {
+export class SchedulerComponent implements OnInit, AfterViewInit {
 
   @Input() resourceData: ResourceData[] = [];
   @Input() pResourceData: ResourceData[] = [];
@@ -47,6 +47,16 @@ export class SchedulerComponent implements OnInit {
       this.schedulerItems.forEach((obj => {
         console.log('obj', obj);
       }));
+    }
+  }
+
+
+  ngAfterViewInit(): void {
+    const resourceDiv = document.getElementById('resource-title-table');
+    if(resourceDiv){
+      resourceDiv.addEventListener('scroll', (event)=> {
+        console.log('Scroll Event', event);
+      });
     }
   }
 

@@ -1,4 +1,5 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, Input, OnInit, ViewEncapsulation} from '@angular/core';
+import {EventData} from "../models/resource-data.model";
 
 @Component({
   selector: 'pl-resource-event-group',
@@ -7,9 +8,15 @@ import {Component, OnInit, ViewEncapsulation} from '@angular/core';
 })
 export class ResourceEventGroupComponent implements OnInit {
 
+
+  @Input() groupData?: EventData[];
   constructor() { }
 
   ngOnInit() {
+  }
+
+  hasValidEvents(){
+
   }
 
 }

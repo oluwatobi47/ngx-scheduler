@@ -46,15 +46,15 @@ export class SchedulerDataComponent implements OnInit {
 
     if(start.isBefore(calendarStart)){
       startDiff = start.diff(calendarStart, 'days');
-      console.log('statDif', startDiff);
     }
+
+    const barPadding = 25;
 
     if(end.isAfter(calendarEnd)) {
       endDiff = end.diff(calendarEnd, 'days');
-      console.log('endDIf', endDiff);
     }
 
-    return noOfdays ? ((noOfdays - (Math.abs(startDiff) + Math.abs(endDiff))) * 100) + 100 - 10: 'auto';
+    return noOfdays ? ((noOfdays - (Math.abs(startDiff) + Math.abs(endDiff))) * 100) + 100 - barPadding: 'auto';
   }
 
 

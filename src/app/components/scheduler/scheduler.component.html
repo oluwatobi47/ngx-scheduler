@@ -7,7 +7,7 @@
           <div class="resource-header-container">
             <span>{{resourceHeader}}</span>
           </div>
-          <div class="w-250">
+          <div class="w-250" id="resource-title-table" style="max-height: 500px; overflow-y: auto">
             <table class="resource-table">
               <tbody>
               <tr *ngFor="let option of pResourceData" class="resource-item" [style.height.px]="getResourceHeight(option)">
